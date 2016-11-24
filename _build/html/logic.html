@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>逻辑问题 &mdash; guardian_review 0.10 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="guardian_review 0.10 documentation" href="index.html"/>
+        <link rel="prev" title="log相关" href="log.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> guardian_review
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.10
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code_style.html">code style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">log相关</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">逻辑问题</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cfg-py">1 cfg.py文件参数类型问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2 阙值检查的方法的逻辑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">3 死循环问题</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">guardian_review</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>逻辑问题</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/logic.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>逻辑问题<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cfg-py">
+<h2>1 cfg.py文件参数类型问题<a class="headerlink" href="#cfg-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">ListOpt</span><span class="p">(</span><span class="s1">&#39;receiver_list&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s1">&#39;support1@xxx.com,support2@xx.com&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>cfg.py文件的93行，cfg.ListOpt应该是list，如：</dt>
+<dd>default=[<a class="reference external" href="mailto:'support1&#37;&#52;&#48;xxx&#46;com">'support1<span>&#64;</span>xxx<span>&#46;</span>com</a>&#8216;, <a class="reference external" href="mailto:'support2&#37;&#52;&#48;xx&#46;com">'support2<span>&#64;</span>xx<span>&#46;</span>com</a>&#8216;]</dd>
+</dl>
+</div>
+<div class="section" id="id2">
+<h2>2 阙值检查的方法的逻辑<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>def _over_check(self):</div></blockquote>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_over_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">latest_samples_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latest_samples_names</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">latest_samples_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">block_samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">latest_samples</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">volume</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">actual_ratio</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">block_samples</span><span class="p">)</span> <span class="o">/</span> <span class="n">latest_samples_len</span>
+        <span class="n">block_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block_samples</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CONF</span><span class="o">.</span><span class="n">valve</span><span class="o">.</span><span class="n">number</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">block_number</span> <span class="o">&gt;</span> <span class="n">CONF</span><span class="o">.</span><span class="n">valve</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="p">(</span><span class="n">CONF</span><span class="o">.</span><span class="n">valve</span><span class="o">.</span><span class="n">ratio</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">actual_ratio</span> <span class="o">&gt;</span> <span class="n">CONF</span><span class="o">.</span><span class="n">valve</span><span class="o">.</span><span class="n">ratio</span><span class="p">):</span>
+            <span class="c1"># 发送告警邮件</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;count of ok nodes over threshold&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">CONF</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">enable_send_mail</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">over_check_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_check_time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_before_time</span><span class="p">(</span>
+                                <span class="n">CONF</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">send_interval_hours</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)):</span>
+                <span class="n">mail_content</span> <span class="o">=</span> <span class="s2">u&quot;检测节点异常超出阈值[阈值数为: </span><span class="si">%s</span><span class="s2">, 节点异常数为: </span><span class="si">%s</span><span class="s2">, 阈值比率为: </span><span class="si">%s</span><span class="s2">,&quot;</span> \
+                               <span class="s2">u&quot;实际比率为: </span><span class="si">%s</span><span class="s2"> ]，需人工确认处理&quot;</span> <span class="o">%</span> \
+                               <span class="p">(</span><span class="n">CONF</span><span class="o">.</span><span class="n">valve</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">block_number</span><span class="p">,</span> <span class="n">CONF</span><span class="o">.</span><span class="n">valve</span><span class="o">.</span><span class="n">ratio</span><span class="p">,</span> <span class="n">actual_ratio</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;success&#39;</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_mail</span><span class="p">(</span><span class="n">mail_content</span><span class="o">=</span><span class="n">mail_content</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;send mail success at </span><span class="si">%s</span><span class="s1"> for over threshold&#39;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">over_check_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ignore send mail for threshold:have send mail in recent </span><span class="si">%s</span><span class="s2"> hours&quot;</span>
+                         <span class="o">%</span> <span class="n">CONF</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">send_interval_hours</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+</div>
+<p>guardian.py文件的78行~102行，这个检查阙值的函数好像没有考虑下面两只情况</p>
+<ol class="arabic simple">
+<li>节点报不通的数量以及不同的比例发生变化的情况（两次都在阙值以上，但这两个值发生了变化）</li>
+<li>超过阙值 -&gt; 降到阙值以下 -&gt; 再次超过阙值</li>
+</ol>
+<p>以上这两种情况也是要经过max_report_error_count = 3（3小时）发一次邮件告警，感觉这种情况在执行_over_check的时候应该再次发邮件告警，而不是经过3小时</p>
+</div>
+<div class="section" id="id3">
+<h2>3 死循环问题<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_wait_for_service_to_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">service</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nova_client</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="s1">&#39;nova-compute&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">service</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="s1">&#39;down&#39;</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;service state of </span><span class="si">%s</span><span class="s1"> is </span><span class="si">%s</span><span class="s1">, wait for it to down&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">service</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;service state of </span><span class="si">%s</span><span class="s1"> is down now&#39;</span> <span class="o">%</span> <span class="n">node</span><span class="p">)</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;get service with node </span><span class="si">%s</span><span class="s1"> failed&#39;</span> <span class="o">%</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+</div>
+<p>guardian.py文件的408行~424行，若一直不能将该node down掉，则陷入死循环，感觉应该有个超时或什么处理机制</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="log.html" class="btn btn-neutral" title="log相关" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, hanwei.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.10',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
